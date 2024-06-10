@@ -1,20 +1,17 @@
 require("dotenv").config();
-const firebase = require("firebase/app");
 const admin = require("firebase-admin");
+const serviceAccount = require("./firebase.json");
+const { initializeApp } = require("firebase/app");
+const { getFirestore, setDoc, getDoc, doc } = require("firebase/firestore");
 const {
 	getAuth,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
+	onAuthStateChanged,
 	signOut,
 	sendEmailVerification,
 	sendPasswordResetEmail,
 } = require("firebase/auth");
-
-const serviceAccount = require("./firebase.json");
-
-admin.initializeApp({
-	credential: admin.credential.cert(serviceAccount),
-});
 
 const firebaseConfig = {
 	apiKey: process.env.API_KEY,
@@ -27,14 +24,19 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
 
 module.exports = {
 	getAuth,
+	getFirestore,
+	setDoc,
+	getDoc,
+	doc,
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
+	onAuthStateChanged,
 	signOut,
 	sendEmailVerification,
 	sendPasswordResetEmail,
-	admin,
 };

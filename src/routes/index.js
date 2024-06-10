@@ -1,17 +1,25 @@
 const express = require("express");
 const router = express.Router();
-const verifyToken = require("../middleware");
+const {
+	verifyTokenBeforeLogin,
+	verifyTokenAfterLogin,
+} = require("../middleware");
 
-const firebaseAuthController = require("../controllers/firebase-auth-controller");
-const loginCheck = require("../controllers/login-check.js");
+const {
+	registerUser,
+	loginUser,
+	logoutUser,
+	resetPassword,
+	getUserData,
+} = require("../controllers/firebase-auth-controller.js");
 
 // Auth routes
-router.post("/api/register", firebaseAuthController.registerUser);
-router.post("/api/login", firebaseAuthController.loginUser);
-router.post("/api/logout", firebaseAuthController.logoutUser);
-router.post("/api/reset-password", firebaseAuthController.resetPassword);
+router.post("/api/register", registerUser);
+router.post("/api/login", loginUser);
+router.post("/api/user", getUserData);
+router.post("/api/reset-password", resetPassword);
+router.post("/api/logout", logoutUser);
 
 //posts routes
-router.post("/api/login-check", verifyToken, loginCheck.getCheck);
 
 module.exports = router;
