@@ -1,6 +1,5 @@
 node_modules
 .env
 src/config/firebase.json
-src/controllers/user.json
 src/middleware
 package-lock.json
