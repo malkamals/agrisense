@@ -6,13 +6,10 @@ const {
 	doc,
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
-	onAuthStateChanged,
 	signOut,
 	sendEmailVerification,
 	sendPasswordResetEmail,
 } = require("../config/firebase");
-
-let { email, password } = require("./user");
 
 const auth = getAuth();
 const db = getFirestore();
@@ -79,27 +76,24 @@ const loginUser = (req, res) => {
 };
 
 const getUserData = (req, res) => {
-	onAuthStateChanged(auth, (user) => {
-		const loggedInUserId = req.session.idToken;
-		if (loggedInUserId) {
-			const docRef = doc(db, "users", loggedInUserId);
-			getDoc(docRef)
-				.then((docSnapshot) => {
-					if (docSnapshot.exists()) {
-						const userData = docSnapshot.data();
-						res.status(200).json({ userData });
-					} else {
-						res.status(404).json({ error: "User not found" });
-					}
-				})
-				.catch((error) => {
-					console.error(error);
-					res.status(500).json({ error: "Internal Server Error" });
-				});
-		} else {
-			res.status(401).json({ error: "Unauthorized" });
-		}
-	});
+	const loggedInUserId = req.session.idToken;
+	if (!loggedInUserId) {
+		return res.status(401).json({ error: "Unauthorized" });
+	}
+
+	const docRef = doc(db, "users", loggedInUserId);
+	getDoc(docRef)
+		.then((docSnapshot) => {
+			if (!docSnapshot.exists()) {
+				return res.status(404).json({ error: "User not found" });
+			}
+			const userData = docSnapshot.data();
+			return res.status(200).json({ userData });
+		})
+		.catch((error) => {
+			console.error(error);
+			return res.status(500).json({ error: "Internal Server Error" });
+		});
 };
 
 const logoutUser = (req, res) => {

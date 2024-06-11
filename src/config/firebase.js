@@ -7,7 +7,6 @@ const {
 	getAuth,
 	createUserWithEmailAndPassword,
 	signInWithEmailAndPassword,
-	onAuthStateChanged,
 	signOut,
 	sendEmailVerification,
 	sendPasswordResetEmail,
@@ -25,7 +24,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-admin.initializeApp({ credential: admin.credential.cert(serviceAccount) });
+admin.initializeApp({
+	credential: admin.credential.cert(serviceAccount),
+});
 
 module.exports = {
 	getAuth,
@@ -35,7 +36,6 @@ module.exports = {
 	doc,
 	signInWithEmailAndPassword,
 	createUserWithEmailAndPassword,
-	onAuthStateChanged,
 	signOut,
 	sendEmailVerification,
 	sendPasswordResetEmail,
