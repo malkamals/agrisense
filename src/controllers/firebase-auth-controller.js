@@ -12,10 +12,12 @@ const {
 	sendPasswordResetEmail,
 } = require("../config/firebase");
 
+let { email, password } = require("./user");
+
 const auth = getAuth();
 const db = getFirestore();
 
-function registerUser(req, res) {
+const registerUser = (req, res) => {
 	const { email, password } = req.body;
 	if (!email || !password) {
 		return res.status(422).json({
@@ -52,9 +54,9 @@ function registerUser(req, res) {
 				error.message || "An error occurred while registering user";
 			res.status(500).json({ error: errorMessage });
 		});
-}
+};
 
-function loginUser(req, res) {
+const loginUser = (req, res) => {
 	const { email, password } = req.body;
 	if (!email || !password) {
 		return res.status(422).json({
@@ -74,9 +76,9 @@ function loginUser(req, res) {
 				error.message || "An error occurred while logging in";
 			res.status(500).json({ error: errorMessage });
 		});
-}
+};
 
-function getUserData(req, res) {
+const getUserData = (req, res) => {
 	onAuthStateChanged(auth, (user) => {
 		const loggedInUserId = req.session.idToken;
 		if (loggedInUserId) {
@@ -98,9 +100,9 @@ function getUserData(req, res) {
 			res.status(401).json({ error: "Unauthorized" });
 		}
 	});
-}
+};
 
-function logoutUser(req, res) {
+const logoutUser = (req, res) => {
 	req.session.idToken = null;
 	signOut(auth)
 		.then(() => {
@@ -110,9 +112,9 @@ function logoutUser(req, res) {
 			console.error(error);
 			res.status(500).json({ error: "Internal Server Error" });
 		});
-}
+};
 
-function resetPassword(req, res) {
+const resetPassword = (req, res) => {
 	const { email } = req.body;
 	if (!email) {
 		return res.status(422).json({
@@ -129,12 +131,12 @@ function resetPassword(req, res) {
 			console.error(error);
 			res.status(500).json({ error: "Internal Server Error" });
 		});
-}
+};
 
 module.exports = {
 	registerUser,
 	loginUser,
+	getUserData,
 	logoutUser,
 	resetPassword,
-	getUserData,
 };

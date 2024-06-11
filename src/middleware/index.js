@@ -40,3 +40,8 @@ module.exports = {
 	verifyTokenBeforeLogin,
 	verifyTokenAfterLogin,
 };
+
+// const {
+// 	verifyTokenBeforeLogin,
+// 	verifyTokenAfterLogin,
+// } = require("../middleware");
