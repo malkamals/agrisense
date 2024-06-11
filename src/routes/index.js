@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const {
-	verifyTokenBeforeLogin,
-	verifyTokenAfterLogin,
-} = require("../middleware");
-
-const {
 	registerUser,
 	loginUser,
 	logoutUser,
