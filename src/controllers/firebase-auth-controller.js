@@ -28,6 +28,7 @@ function registerUser(req, res) {
 			sendEmailVerification(auth.currentUser)
 				.then(() => {
 					const user = userCredential.user;
+					req.session.idToken = user.uid;
 					const userData = {
 						uid: user.uid,
 						email: email,
@@ -100,9 +101,9 @@ function getUserData(req, res) {
 }
 
 function logoutUser(req, res) {
+	req.session.idToken = null;
 	signOut(auth)
 		.then(() => {
-			req.session.idToken = null;
 			res.status(200).json({ message: "User logged out successfully" });
 		})
 		.catch((error) => {

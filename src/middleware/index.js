@@ -1,13 +1,17 @@
+const { getAuth } = require("../config/firebase");
+const auth = getAuth();
+
 const verifyTokenBeforeLogin = async (req, res, next) => {
+	const idToken =
+		req.body.idToken || req.query.idToken || req.headers["authorization"];
 	if (!idToken) {
-		return res.status(403).redirect("/api/login");
-		// res.json({ error: "No token provided" });
+		return res.status(403).json({ error: "No token provided" });
 	}
 
 	try {
-		req.session.idToken = idToken;
-		// const decodedToken = await admin.auth().verifyIdToken(idToken);
-		// req.user = decodedToken;
+		const decodedToken = await auth.verifyIdToken(idToken);
+		req.user = decodedToken;
+		res.status(200).json({ message: "Token verified successfully" });
 		next();
 	} catch (error) {
 		console.error("Error verifying token:", error);
@@ -18,18 +22,17 @@ const verifyTokenAfterLogin = async (req, res, next) => {
 	const idToken = req.session.idToken;
 	if (idToken) {
 		try {
-			req.session.idToken = idToken;
-			// const decodedToken = await admin.auth().verifyIdToken(idToken);
-			// req.user = decodedToken;
-			return res.redirect("/api/dashboard");
+			const decodedToken = await auth.verifyIdToken(idToken);
+			req.user = decodedToken;
+			return res.status(200).json({ message: "Token verified successfully" });
 		} catch (error) {
+			console.error("Error verifying token:", error);
 			next();
-			// console.error("Error verifying token:", error);
-			// return res.status(403).json({ error: "Unauthorized" });
+			return res.status(403).json({ error: "Unauthorized" });
 		}
 	} else {
+		res.json({ error: "No token provided" });
 		next();
-		// res.json({ error: "No token provided" });
 	}
 };
 

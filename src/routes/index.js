@@ -21,5 +21,4 @@ router.post("/api/reset-password", resetPassword);
 router.post("/api/logout", logoutUser);
 
 //posts routes
-
 module.exports = router;
