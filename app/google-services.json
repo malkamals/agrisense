@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "964437575004",
+    "project_id": "agrisense-1f747",
+    "storage_bucket": "agrisense-1f747.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:964437575004:android:4cf94b9b7d97ee6a176d99",
+        "android_client_info": {
+          "package_name": "com.example.agrisense"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCILuNEzRo44zVIdRVocvS1l1XOgIwNd_k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
