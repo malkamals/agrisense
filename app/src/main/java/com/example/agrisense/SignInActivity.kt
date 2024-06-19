@@ -3,7 +3,6 @@ package com.example.agrisense
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.agrisense.api.LoginRequest
@@ -37,21 +36,26 @@ class SignInActivity : AppCompatActivity() {
                     override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
-                            Log.d("LoginResponse", loginResponse.toString())
+                            val accessToken = loginResponse?.user?.stsTokenManager?.accessToken
+                            Log.d("LoginResponse", accessToken.toString())
                             val intent = Intent(this@SignInActivity, MainActivity::class.java)
+                            intent.putExtra("accessToken", accessToken)
                             startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(this@SignInActivity, "Login failed: ${response.message()}", Toast.LENGTH_SHORT).show()
+                            Log.d("LoginResponse", response.message())
                         }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                         Toast.makeText(this@SignInActivity, "Login failed: ${t.message}", Toast.LENGTH_SHORT).show()
+                        Log.d("LoginResponse", t.message.toString())
                     }
                 })
             } else {
                 Toast.makeText(this, "Isi semua field!", Toast.LENGTH_SHORT).show()
+                Log.d("LoginResponse", "Isi semua field!")
             }
         }
     }

@@ -5,7 +5,23 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 data class LoginRequest(val email: String, val password: String)
-data class LoginResponse(val token: String)
+data class LoginResponse(
+    val message: String,
+    val user: UserData
+) {
+    data class UserData(
+        val uid: String,
+        val email: String,
+        val stsTokenManager: TokenManager
+    )
+
+    data class TokenManager(
+        val accessToken: String,
+        val refreshToken: String,
+        val expirationTime: Long
+    )
+}
+
 data class SignUpRequest(val email: String, val password: String)
 data class SignUpResponse(val message: String)
 
