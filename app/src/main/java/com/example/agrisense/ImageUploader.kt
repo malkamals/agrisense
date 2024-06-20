@@ -16,12 +16,12 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
 
 class ImageUploader {
-    fun uploadImage(imageUri: Uri, context: MainActivity) {
+    fun uploadImage(imageUri: Uri, context: MainActivity, bearerToken: String?) {
         val file = File(context.getRealPathFromURI(imageUri))
         val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
         val body = MultipartBody.Part.createFormData("image", file.name, requestFile)
 
-        val call = RetrofitClient.instance.uploadImage(body)
+        val call = RetrofitClient.apiService.uploadImage(body)
         call.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 if (response.isSuccessful) {

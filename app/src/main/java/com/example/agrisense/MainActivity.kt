@@ -14,6 +14,7 @@ class MainActivity : AppCompatActivity() {
     private var currentImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -24,7 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.analyzeButton.setOnClickListener {
             currentImageUri?.let {
-                ImageUploader().uploadImage(it, this)
+                val token = intent.getStringExtra("accessToken")
+                ImageUploader().uploadImage(it,this, token)
             } ?: showToast("Please select an image first.")
         }
     }
