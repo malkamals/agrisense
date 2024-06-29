@@ -1,8 +1,15 @@
 node_modules
 .env
+.gitignore
 src/config/firebase.json
+
+# backend
 src/backend/data
 src/backend/model
-src/public
+
+# frontend
 src/middleware
-src/routes/viewRouter.js
+src/public
+
+src/routes/viewRouter
+

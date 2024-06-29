@@ -1,13 +1,16 @@
 {
 	"openapi": "3.0.0",
 	"info": {
-		"title": "Authentication API",
+		"title": "AGRISENSE BACKEND API",
 		"version": "1.0.0",
-		"description": "API for firebase-firestore authentication"
+		"description": "API  Firebase Authentication and Machine Learning Prediction"
 	},
 	"tags": [
 		{
-			"name": "API"
+			"name": "AUTH API"
+		},
+		{
+			"name": "ML API"
 		}
 	],
 	"components": {
@@ -45,13 +48,26 @@
 				"example": {
 					"email": "email@example.com"
 				}
+			},
+			"Prediction": {
+				"type": "object",
+				"properties": {
+					"image": {
+						"type": "file",
+						"format": "binary",
+						"description": "image file for prediction"
+					}
+				},
+				"example": {
+					"image": "image.jpg / image.png / image.jpeg"
+				}
 			}
 		}
 	},
 	"paths": {
-		"/register": {
+		"/api/register": {
 			"post": {
-				"tags": ["API"],
+				"tags": ["AUTH API"],
 				"summary": "Register a new user",
 				"requestBody": {
 					"required": true,
@@ -65,7 +81,7 @@
 				},
 				"responses": {
 					"201": {
-						"description": "User created successfully, verification email sent",
+						"description": "User created successfully, verification email sent! Please verify your email in 3 minutes.",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -118,9 +134,9 @@
 				}
 			}
 		},
-		"/login": {
+		"/api/login": {
 			"post": {
-				"tags": ["API"],
+				"tags": ["AUTH API"],
 				"summary": "Login a user",
 				"requestBody": {
 					"required": true,
@@ -184,9 +200,9 @@
 				}
 			}
 		},
-		"/user": {
+		"/api/user": {
 			"get": {
-				"tags": ["API"],
+				"tags": ["AUTH API"],
 				"summary": "Get current user",
 				"responses": {
 					"200": {
@@ -252,9 +268,9 @@
 				}
 			}
 		},
-		"/logout": {
+		"/api/logout": {
 			"post": {
-				"tags": ["API"],
+				"tags": ["AUTH API"],
 				"summary": "Logout a user",
 				"responses": {
 					"200": {
@@ -290,9 +306,9 @@
 				}
 			}
 		},
-		"/reset-password": {
+		"/api/reset-password": {
 			"post": {
-				"tags": ["API"],
+				"tags": ["AUTH API"],
 				"summary": "Reset password",
 				"requestBody": {
 					"required": true,
@@ -306,7 +322,7 @@
 				},
 				"responses": {
 					"200": {
-						"description": "Password reset email sent successfully",
+						"description": "Password reset email sent",
 						"content": {
 							"application/json": {
 								"schema": {
@@ -331,6 +347,150 @@
 											"type": "string"
 										}
 									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/predict": {
+			"post": {
+				"tags": ["ML API"],
+				"summary": "Make a prediction",
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/Prediction"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Prediction made successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"predictId": {
+											"type": "string",
+											"description": "Prediction ID"
+										},
+										"result": {
+											"type": "string",
+											"description": "Prediction result"
+										}
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/history": {
+			"get": {
+				"tags": ["ML API"],
+				"summary": "Get prediction histories by user ID",
+				"parameters": [
+					{
+						"name": "userId",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "ID of the user"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Prediction histories retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Prediction"
+									}
+								}
+							}
+						}
+					},
+					"500": {
+						"description": "Internal Server Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"properties": {
+										"error": {
+											"type": "string"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/history/:predictId": {
+			"get": {
+				"tags": ["ML API"],
+				"summary": "Get prediction data by prediction ID",
+				"parameters": [
+					{
+						"name": "predictId",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string"
+						},
+						"description": "ID of the prediction"
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Prediction data retrieved successfully",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Prediction"
 								}
 							}
 						}

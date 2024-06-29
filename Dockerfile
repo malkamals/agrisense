@@ -1,0 +1,30 @@
+FROM node:20
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+COPY . . 
+
+# ENVIRONMENT
+ENV PORT=8080
+ENV MODEL_URL=https://storage.googleapis.com/agrisense-model-ml/model/model.json
+ENV API_KEY=AIzaSyDqNIeeTdr9Db1ZunHk1ILL8Y7ghe37jVA
+ENV AUTH_DOMAIN=capstone-project-agrisense.firebaseapp.com
+ENV PROJECT_ID=capstone-project-agrisense
+ENV STORAGE_BUCKET=capstone-project-agrisense.appspot.com
+ENV MESSAGING_SENDER_ID=417220384287
+ENV APP_ID=1:417220384287:web:68f67330102c5017d3272a
+ENV MEASUREMENT_ID=G-V0F2S2XSV6
+
+ENV TYPE=service_account
+ENV PROJECT_ID=capstone-project-agrisense
+ENV PRIVATE_KEY_ID=412b3cbba2233476b399bca20348064529c5f4e0
+ENV PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC/owICzETm76xU\n5PmFyb2LoOGRkXRhTxJNLpYFdOC1AS4QGlH0pHVyoqh9OR5tZzvs9m1/XqFBDBzV\nLIGh194c92mX1qlTKubOZbESRe9H9hRjV8RaJMu56csZ+Sia3JMdL6pYBRHc1jok\nlx2Spq05nMoSP9WMFVRZ16Kbt2lYYD5ueNza2rw/fZOxIehOOF8a5SzJWuQwFX9c\nW2MrouXsDkzN0L4mc53gXeWxj77BJyT8cCv2qwwCQNm3/CvbqoNIp5vGkkwhLXek\naTjeEYl/Zt/g+rokRVcqQlwG27tNOi+qIANN1Miodzdg9+UI5pjITOpBmbnz2AJU\nwzJ7AhiZAgMBAAECggEAAKgNyzWo7MOYawgHxMoOoKpR6348kFLFhMcqk2U1mdkh\nr8NvUW+4yUY+XoNyE7zdSzAC6wNHeSIR/Tb0ULodFCtSzMba+KJ2fPGDPEVKDwyM\nQFTeItLqcb4XyIR+e51S0bBGnJuT1pZTR6nO26A/iql7VbmrQRoXmmEvOOpVbYyR\nUiQIzNzGeFBKMT3KfPpxiq0XEzr0u0zPFqdSnlD9zgaapJYc/pT0KIWWwPDqu23e\nBB2S4ol9u0T2OxhdCBlsW68Toq69+x/OgWrthYMgf8wxntX16bGJJWSNxczKHZlT\nuX+GNHUEBvsHrKdN1NI4j4VyIji5BvyLbvtUExRJswKBgQD9mEIEGAH1xPkg9utu\n4afemjKbJ94qTZosYStK30G9cpHrtyBwwPvQWQxwJ4CohksoOT+j5kAhbFKRxufN\nfskSzCZjQVJJdwtjVvkPE05HvbjVzQbitAWU//MNM26oMfi47POqtFvxQylOJUdy\nb6fRMSMki4lZ/qEZSSMP0IKL8wKBgQDBdFAAODZ41gQoAFxpuQsQC6pM2MHCJSTJ\nnciWJOnbe97S5xLY3LCLaxlFCrg5wU2CxMwu/lBiBXX6VePCwLWV/pMaAa8BG0Qk\nAtLemY9cEdoI52NO/ti+QXVR1+qa7kdd2fepA0T5m/lZ6i54KEt1NjqzRnoj2lXK\nOhRiDwCoQwKBgFNRXv8xVBOHb8Kg3aFEin7ccpv/cUK81FaYZjznNRYlOkQTmpjx\nDsrZNvjyQZcc6DyC8qHK2G8iw84ZZ7dgXHfMkyAxKfPxJNCylomZcjKn5r536jc5\npkvZ++TubQDdyjYXw8bmEv8lbcC7BspWXPCiEEXFgo8K1asVGGvtubZ5AoGAAikm\na5o1IYxiZ3/5iETE1t0Kfek94MlBa+8TOnoXEpiDmJ90Gm/8mNINajQAcsSx9O/1\nx+CXTUD6XF1xOc+lN5OsWPID3mNLk4tkh4/3hfO9F7Rd65f1G8rnYI6k1C4tJeM1\nXPHoZ1FSq6pt8nGgxiJg7XewDY52vtd/OskoHLkCgYBl5Xlx966tIgYdsUanwCex\n0IHpu49EVJlifu+1XILtD5wfAZfO7n9hXcpRrEjPxwwINW2Rqolk3a6c3Q/+pa5E\np6TkfZzeebVOc3A9/u0eDKYQg2knQkxRlsN0hfPrslbnLxLZh4IOzzMNdJAnbOjE\n7veZjxuYzCIC1cGG/9o/9A==\n-----END PRIVATE KEY-----\n"
+ENV CLIENT_EMAIL=firebase-adminsdk-ssyl3@capstone-project-agrisense.iam.gserviceaccount.com
+ENV CLIENT_ID=100587411404899304763
+ENV AUTH_URI=https://accounts.google.com/o/oauth2/auth
+ENV TOKEN_URI=https://oauth2.googleapis.com/token
+ENV AUTH_PROVIDER_X509_CERT_URL=https://www.googleapis.com/oauth2/v1/certs
+ENV CLIENT_X509_CERT_URL=https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-ssyl3%40capstone-project-agrisense.iam.gserviceaccount.com
+ENV UNIVERSE_DOMAIN=googleapis.com
+
+CMD [ "npm", "start"]

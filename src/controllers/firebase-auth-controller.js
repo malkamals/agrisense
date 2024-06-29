@@ -1,4 +1,5 @@
 const {
+	admin,
 	getAuth,
 	getFirestore,
 	setDoc,
@@ -14,7 +15,7 @@ const {
 const auth = getAuth();
 const db = getFirestore();
 
-const registerUser = (req, res) => {
+const registerUser = async (req, res) => {
 	const { email, password } = req.body;
 	if (!email || !password) {
 		return res.status(422).json({
@@ -22,35 +23,64 @@ const registerUser = (req, res) => {
 			password: "Password is required",
 		});
 	}
-	createUserWithEmailAndPassword(auth, email, password)
-		.then((userCredential) => {
-			sendEmailVerification(auth.currentUser)
-				.then(() => {
-					const user = userCredential.user;
-					req.session.idToken = user.uid;
-					const userData = {
-						uid: user.uid,
-						email: email,
-						emailVerified: user.emailVerified,
-						createdAt: new Date(),
-					};
-					const docRef = doc(db, "users", user.uid);
-					setDoc(docRef, userData);
-					res.status(201).json({
-						message: "Verification email sent! User created successfully!",
-						user: user,
-					});
-				})
-				.catch((error) => {
-					console.error(error);
-					res.status(500).json({ error: "Error sending email verification" });
-				});
-		})
-		.catch((error) => {
-			const errorMessage =
-				error.message || "An error occurred while registering user";
-			res.status(500).json({ error: errorMessage });
-		});
+
+	try {
+		const userCredential = await createUserWithEmailAndPassword(
+			auth,
+			email,
+			password
+		);
+		await sendEmailVerification(auth.currentUser);
+		console.log(
+			"Verification email sent! Please verify your email in 3 minutes."
+		);
+
+		const user = userCredential.user;
+		const userData = {
+			uid: user.uid,
+			email: email,
+			photoUrl: user.photoURL || null,
+			displayName: user.displayName || null,
+			phoneNumber: user.phoneNumber || null,
+			emailVerified: user.emailVerified,
+			createdAt: new Date(),
+		};
+
+		const docRef = doc(db, "users", user.uid);
+		await setDoc(docRef, userData);
+		///
+		let emailVerify = false;
+		const maxRetries = 180; // 3 menit = 180 detik
+		let retries = 0;
+
+		while (!emailVerify && retries < maxRetries) {
+			await new Promise((resolve) => setTimeout(resolve, 1000)); // Tunggu 1 detik
+			const userRecord = await admin.auth().getUser(user.uid);
+			emailVerify = userRecord.emailVerified;
+			if (emailVerify) {
+				await setDoc(
+					doc(db, "users", user.uid),
+					{ emailVerified: emailVerify },
+					{ merge: true }
+				);
+				console.log("Email verification status updated");
+			}
+			retries++;
+		}
+		if (emailVerify) {
+			res.status(201).json({ message: "User created successfully!" });
+		} else {
+			res.status(200).json({
+				message: "User created, but email not verified within the time limit.",
+			});
+		}
+		///
+	} catch (error) {
+		console.error(error);
+		const errorMessage =
+			error.message || "An error occurred while registering user";
+		res.status(500).json({ error: errorMessage });
+	}
 };
 
 const loginUser = (req, res) => {
@@ -65,7 +95,10 @@ const loginUser = (req, res) => {
 		.then((userCredential) => {
 			const user = userCredential.user;
 			req.session.idToken = user.uid;
-			res.status(200).json({ message: "User logged in successfully" });
+			res.status(200).json({
+				message: "User logged in successfully",
+				user: user,
+			});
 		})
 		.catch((error) => {
 			console.error(error);
@@ -75,25 +108,26 @@ const loginUser = (req, res) => {
 		});
 };
 
-const getUserData = (req, res) => {
+const getUserData = async (req, res) => {
 	const loggedInUserId = req.session.idToken;
 	if (!loggedInUserId) {
 		return res.status(401).json({ error: "Unauthorized" });
 	}
 
-	const docRef = doc(db, "users", loggedInUserId);
-	getDoc(docRef)
-		.then((docSnapshot) => {
-			if (!docSnapshot.exists()) {
-				return res.status(404).json({ error: "User not found" });
-			}
-			const userData = docSnapshot.data();
-			return res.status(200).json({ userData });
-		})
-		.catch((error) => {
-			console.error(error);
-			return res.status(500).json({ error: "Internal Server Error" });
-		});
+	try {
+		const docRef = doc(db, "users", loggedInUserId);
+		const docSnapshot = await getDoc(docRef);
+
+		if (!docSnapshot.exists()) {
+			return res.status(404).json({ error: "User not found" });
+		}
+
+		const userData = docSnapshot.data();
+		return res.status(200).json({ userData });
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({ error: "Internal Server Error" });
+	}
 };
 
 const logoutUser = (req, res) => {

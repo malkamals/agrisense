@@ -1,0 +1,19 @@
+runtime: nodejs20
+service: default
+
+instance_class: F2
+
+env_variables:
+  NODE_ENV: "production"
+  PORT: "8080"
+  MODEL_URL: "https://storage.googleapis.com/agrisense-model-ml/model/model.json"
+
+handlers:
+  - url: /static
+    static_dir: resources/image
+
+  - url: /.*
+    script: auto
+
+manual_scaling:
+  instances: 1
